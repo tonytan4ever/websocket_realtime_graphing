@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <title>Highchart SocketIO Example</title>
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="./static/highcharts/jquery-1.7.1.min.js"></script>
+     
+        <script src="./static/highcharts/highcharts.src.js" type="text/javascript"></script>
+        <script type="text/javascript">
+    	Highcharts.setOptions({
+			global: {
+				useUTC: false
+			}
+		});
+    	
+    	$(document).ready(function() {
+    		  
+    		
+    	      var chartA = new Highcharts.Chart({
+    	         chart: {
+    	            renderTo: 'widgetA',
+    	            type: 'spline'
+    	         },
+    	         title: {
+    	            text: 'Chart A'
+    	         },
+    	         xAxis: {
+    	        	 type: 'datetime',
+    		         tickPixelInterval: 150
+    	         },
+    	         yAxis: {
+    	        	 title: {
+    		             text: 'Value'
+    		          },
+    		          plotLines: [{
+    		             value: 0,
+    		             width: 1,
+    		             color: '#808080'
+    		          }]
+    	         },
+    	         series: [{
+    	        	 name: "Data stream A",
+    	        	 data: []
+    	         }]
+    	      });
+    	      
+    	      $.ajax({
+    	    	  url: 'http://localhost:3000/'+ "test_dashboard/" + "metricA", 
+    	    	  success: function() { alert("success"); }   	    	  
+    	      });
+    	      
+    	      
+    	      var chartB = new Highcharts.Chart({
+     	         chart: {
+     	            renderTo: 'widgetB',
+     	            type: 'spline'
+     	         },
+     	         title: {
+     	            text: 'Chart B'
+     	         },
+     	         xAxis: {
+     	        	 type: 'datetime',
+     		         tickPixelInterval: 150
+     	         },
+     	         yAxis: {
+     	        	 title: {
+     		             text: 'Value'
+     		          },
+     		          plotLines: [{
+     		             value: 0,
+     		             width: 1,
+     		             color: '#808080'
+     		          }]
+     	         },
+     	         series: [{
+     	        	 name: "Data stream B",
+     	        	 data: []
+     	         }]
+     	      });
+    	      
+    	      $.ajax({
+    	    	  url: 'http://localhost:3000/'+ "test_dashboard/" + "metricB", 
+    	    	  success: function() { alert("success"); }   	    	  
+    	      });
+    	      
+    	      
+    	      var socket = io.connect('http://localhost:3000');
+    	        socket.emit("set nickname", 'test_dashboard');
+    	        socket.on("ready", function() {
+    	        	  console.log("ready");
+    	              socket.emit("start receiving data (from redis client)...")
+    	              socket.on("metricA", function(data) {
+    	            	  data = $.parseJSON(data);
+    	            	  point =[]; 
+    	    	    	  point[0] = data["x"] * 1000;
+    	    	    	  point[1] = data["y"];
+    	            	  chartA.series[0].addPoint(point);
+    	              });
+    	              
+    	              socket.on("metricB", function(data) {
+    	            	  data = $.parseJSON(data);
+    	            	  point =[]; 
+    	    	    	  point[0] = data["x"] * 1000;
+    	    	    	  point[1] = data["y"];
+    	            	  chartB.series[0].addPoint(point);
+    	              });
+    	         });
+    	      
+    	});	
+    	</script>
+    </head>
+    <body>
+        <h1>Websocket RealTime Data Example</h1>
+        <!--  div id="conn_status">Not Connected</div> -->
+        <div id="widgetA" style="width:600px;height:300px;"></div>
+        <div id="widgetB" style="width:600px;height:300px;"></div>
+    </body>
+</html>
