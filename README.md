@@ -1,4 +1,4 @@
-websocket_realtime_graphing
+WebSocket Realtime Data Graphing Example
 ===========================
 
-nodejs/flask-socketio websocket implementation
+nodejs/flask-socketio as websocket server implementation
