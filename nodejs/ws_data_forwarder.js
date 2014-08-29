@@ -3,7 +3,7 @@ var express = require('express')
 
 var app = express();
 var server = http.Server(app); 
-var REDIS_HOST_IP = "192.168.59.103";
+var REDIS_HOST_IP = "<your_redis_host_ip>";
 
 const io = require('socket.io')(server);
 const redis = require("redis"),
@@ -14,17 +14,17 @@ server.listen(3000, function(){
 });
 
 app.all('/:dashboard_id/:metric_pattern', function (req, res, next) {
-  if(req.params.metric_pattern ==  "metricA" || req.params.metric_pattern ==  "metricB"){
+  if(req.params.metric_pattern ==  "dataStreamA" || req.params.metric_pattern ==  "dataStreamB"){
 	  /*subscribe to corresponding channel in redis*/
 	  io.sockets.on('connection', function (socket) {
-		  socket.on('set nickname', function (name) {
+		  socket.on('set socket_name', function (name) {
 		    socket.name = name;
 		     socket.emit('ready');
 			 console.log('waiting client\'s acknowledgement...');
 		  });
 
 		  socket.on("start receiving data (from redis client)...", function () {
-		  	console.log("nick nickname: " + socket.name);
+		  	console.log("socket_name: " + socket.name);
 		  	if(socket.name == req.params.dashboard_id) {
 	    	  console.log("building subscription to " + req.params.metric_pattern);
 	    	  client.subscribe(req.params.metric_pattern);
