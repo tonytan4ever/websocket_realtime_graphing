@@ -4,7 +4,7 @@ from threading import Thread
 from gevent import monkey
 monkey.patch_all()
 
-from flask import Flask, session, render_template
+from flask import Flask, redirect, session, render_template
 from flask.ext.socketio import SocketIO, send, emit
 
 import redis
@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 redis_subscribe_threads = []
 
-REDIS_HOST_IP = "<your_redis_ip>"
+REDIS_HOST_IP = "<your_ip_address>"
 
 redis_connection = redis.Redis(REDIS_HOST_IP)
 
@@ -28,8 +28,8 @@ def subscribe_to_metric(connectionName, metric):
     client.subscribe(metric)
     for item in client.listen():
         if item['type'] == 'message':
-            print item['channel']
-            print item['data']
+            #print item['channel']
+            #print item['data']
             if getattr(socketio, "socket_name", None) == connectionName:
                 socketio.emit(metric, item['data'],
                            namespace='/start_graphing')
@@ -37,7 +37,15 @@ def subscribe_to_metric(connectionName, metric):
 
 @app.route('/')
 def index():
+    return render_template("ws_two_metrics_flask_single_chart.html")
+
+@app.route('/multi_charts')
+def index_multi_charts():
     return render_template("ws_two_metrics_flask.html")
+
+@app.route('/index')
+def redirect_index():
+    return redirect("/", code=302)
 
 @app.route('/<connectionName>/<metricName>')
 def subscribe(connectionName, metricName):

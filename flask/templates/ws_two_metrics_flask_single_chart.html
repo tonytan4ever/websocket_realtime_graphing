@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <title>Highchart SocketIO Example</title> 
+        <script type="text/javascript" src="{{ url_for('static', filename='highcharts/jquery-1.7.1.min.js') }}"></script>    
+    	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+   		<script src="{{ url_for('static', filename='highcharts/highcharts.src.js') }}" type="text/javascript"></script>
+   		
+        <script type="text/javascript">
+    	Highcharts.setOptions({
+			global: {
+				useUTC: false
+			}
+		});
+    	
+    	$(document).ready(function() {
+    	      var chartA = new Highcharts.Chart({
+    	         chart: {
+    	            renderTo: 'widgetA',
+    	            type: 'spline'
+    	         },
+    	         title: {
+    	            text: 'My Data Streams'
+    	         },
+    	         xAxis: {
+    	        	 type: 'datetime',
+    		         tickPixelInterval: 150
+    	         },
+    	         yAxis: {
+    	        	 title: {
+    		             text: 'Value'
+    		          },
+    		          plotLines: [{
+    		             value: 0,
+    		             width: 1,
+    		             color: '#808080'
+    		          }]
+    	         },
+    	         series: [{
+    	        	 name: "Data Stream A",
+    	        	 data: []
+    	         },{
+    	        	 name: "Data Stream B",
+    	        	 data: []
+    	         }]
+    	      });
+    	      
+    	      $.ajax({
+    	    	  url: "/test_dashboard/dataStreamA", 
+    	    	  success: function() { alert("subscribe to dataStreamA successful..."); }   	    	  
+    	      });
+    	      
+    	      
+    	      $.ajax({
+    	    	  url: "/test_dashboard/dataStreamB", 
+    	    	  success: function() { alert("subscribe to dataStreamB successful..."); }   	    	  
+    	      });
+    	      
+    	      
+    	      var socket = io.connect('http://' + document.domain + ':' + location.port + "/start_graphing");
+    	      socket.on("connect", function(){ 
+    	        socket.emit("set socket_name", { data:'test_dashboard' });
+    	      });
+    	      socket.on("ready", function() {
+    	        	  console.log("ready");
+    	              //socket.emit("start receiving data (from redis client)...")
+    	              socket.on("dataStreamA", function(data) {
+    	            	  data = $.parseJSON(data);
+    	            	  point =[]; 
+    	    	    	  point[0] = data["x"] * 1000;
+    	    	    	  point[1] = data["y"];
+    	            	  var series = chartA.series[0],
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
+    	            	  chartA.series[0].addPoint(point, true, shift);
+    	              });
+    	              
+    	              socket.on("dataStreamB", function(data) {
+    	            	  data = $.parseJSON(data);
+    	            	  point =[]; 
+    	    	    	  point[0] = data["x"] * 1000;
+    	    	    	  point[1] = data["y"];
+    	            	  var series = chartA.series[1],
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
+    	            	  chartA.series[1].addPoint(point, true, shift);
+    	              });
+    	         });
+    	      
+    	});	
+    	</script>
+    </head>
+    <body>
+        <h1>WebSocket RealTime Data Example</h1>
+        <!--  div id="conn_status">Not Connected</div> -->
+        <div id="widgetA" style="width:600px;height:300px;"></div>
+    </body>
+</html>
