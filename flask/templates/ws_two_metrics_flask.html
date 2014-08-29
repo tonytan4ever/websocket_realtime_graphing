@@ -93,7 +93,9 @@
     	            	  point =[]; 
     	    	    	  point[0] = data["x"] * 1000;
     	    	    	  point[1] = data["y"];
-    	            	  chartA.series[0].addPoint(point);
+    	            	  var series = chartA.series[0],
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
+    	            	  chartA.series[0].addPoint(point, true, shift);
     	              });
     	              
     	              socket.on("dataStreamB", function(data) {
@@ -101,7 +103,9 @@
     	            	  point =[]; 
     	    	    	  point[0] = data["x"] * 1000;
     	    	    	  point[1] = data["y"];
-    	            	  chartB.series[0].addPoint(point);
+    	            	  var series = chartB.series[0],
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
+    	            	  chartB.series[0].addPoint(point, true, shift);
     	              });
     	         });
     	      

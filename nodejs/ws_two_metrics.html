@@ -94,7 +94,7 @@
     	    	    	  point[0] = data["x"] * 1000;
     	    	    	  point[1] = data["y"];
     	    	    	  var series = chartA.series[0],
-                		  shift = series.data.length > 100; // shift if the series is longer than 40
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
     	            	  chartA.series[0].addPoint(point, true, shift);
     	              });
     	              
@@ -104,7 +104,7 @@
     	    	    	  point[0] = data["x"] * 1000;
     	    	    	  point[1] = data["y"];
     	    	    	  var series = chartB.series[0],
-                		  shift = series.data.length > 100; // shift if the series is longer than 40
+                		  shift = series.data.length > 40; // shift if the series is longer than 40
     	            	  chartB.series[0].addPoint(point, true, shift);
     	              });
     	         });
