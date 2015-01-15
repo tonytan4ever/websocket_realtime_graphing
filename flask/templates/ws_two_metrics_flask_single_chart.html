@@ -56,7 +56,7 @@ d<html>
     	      });
     	      
     	      
-    	      var socket = io.connect('http://' + window.location.origin + window.location.pathname + "/start_graphing");
+    	      var socket = io.connect('http://' + window.location.host + "/start_graphing");
     	      socket.on("connect", function(){ 
     	        socket.emit("set socket_name", { data:'test_dashboard' });
     	      });
