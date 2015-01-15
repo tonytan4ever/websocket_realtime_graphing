@@ -1,4 +1,4 @@
-<html>
+d<html>
     <head>
         <title>Highchart SocketIO Example</title> 
         <script type="text/javascript" src="{{ url_for('static', filename='highcharts/jquery-1.7.1.min.js') }}"></script>    
@@ -56,7 +56,7 @@
     	      });
     	      
     	      
-    	      var socket = io.connect('http://' + document.domain + ':' + location.port + "/start_graphing");
+    	      var socket = io.connect('http://' + window.location.origin + window.location.pathname + "/start_graphing");
     	      socket.on("connect", function(){ 
     	        socket.emit("set socket_name", { data:'test_dashboard' });
     	      });
