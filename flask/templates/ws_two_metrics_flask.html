@@ -42,7 +42,7 @@
     	      });
     	      
     	      $.ajax({
-    	    	  url: "/test_dashboard/dataStreamA", 
+    	    	  url: window.location.pathname + "test_dashboard/dataStreamA", 
     	    	  success: function() { alert("subscribe to dataStreamA successful..."); }   	    	  
     	      });
     	      
@@ -76,7 +76,7 @@
      	      });
     	      
     	      $.ajax({
-    	    	  url: "/test_dashboard/dataStreamB", 
+    	    	  url: window.location.pathname + "test_dashboard/dataStreamB", 
     	    	  success: function() { alert("subscribe to dataStreamB successful..."); }   	    	  
     	      });
     	      
