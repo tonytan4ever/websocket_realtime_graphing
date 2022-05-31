@@ -4,7 +4,7 @@ import json
 
 import redis
 
-REDIS_HOST_IP = "<your_redis_ip>"
+REDIS_HOST_IP = "localhost"
 
 
 def produce_forever():
@@ -12,9 +12,9 @@ def produce_forever():
     while True:
         x = time.time()
         y = 2.5 * (1 + math.sin(x / 50))
-        print "publish to channel dataStreamA..."
+        print("publish to channel dataStreamA...")
         r_server.publish("dataStreamA", json.dumps(dict(x=x, y=y)))
-        print "publish to channel dataStreamB..."
+        print("publish to channel dataStreamB...")
         r_server.publish("dataStreamB", json.dumps(dict(x=x, y=2*y)))
         time.sleep(1)
 

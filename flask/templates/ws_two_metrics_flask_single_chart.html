@@ -2,7 +2,7 @@
     <head>
         <title>Highchart SocketIO Example</title> 
         <script type="text/javascript" src="{{ url_for('static', filename='highcharts/jquery-1.7.1.min.js') }}"></script>    
-    	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
    		<script src="{{ url_for('static', filename='highcharts/highcharts.src.js') }}" type="text/javascript"></script>
    		
         <script type="text/javascript">
@@ -64,20 +64,18 @@
     	        	  console.log("ready");
     	              //socket.emit("start receiving data (from redis client)...")
     	              socket.on("dataStreamA", function(data) {
-    	            	  data = $.parseJSON(data);
     	            	  point =[]; 
-    	    	    	  point[0] = data["x"] * 1000;
-    	    	    	  point[1] = data["y"];
+    	    	    	  point[0] = data.x * 1000;
+    	    	    	  point[1] = data.y;
     	            	  var series = chartA.series[0],
                 		  shift = series.data.length > 40; // shift if the series is longer than 40
     	            	  chartA.series[0].addPoint(point, true, shift);
     	              });
     	              
     	              socket.on("dataStreamB", function(data) {
-    	            	  data = $.parseJSON(data);
     	            	  point =[]; 
-    	    	    	  point[0] = data["x"] * 1000;
-    	    	    	  point[1] = data["y"];
+    	    	    	  point[0] = data.x * 1000;
+    	    	    	  point[1] = data.y;
     	            	  var series = chartA.series[1],
                 		  shift = series.data.length > 40; // shift if the series is longer than 40
     	            	  chartA.series[1].addPoint(point, true, shift);

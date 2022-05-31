@@ -1,24 +1,24 @@
 import os
+import json
 from threading import Thread
 
-from gevent import monkey
-monkey.patch_all()
-
 from flask import Flask, redirect, session, render_template
-from flask.ext.socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit
 
 import redis
 
-app = Flask(__name__, static_folder=os.path.join(
-                            os.path.dirname(
-                                os.path.dirname(__file__),
-                                ), "static")
-                            )
+app = Flask(__name__, 
+        static_folder=os.path.join(
+            os.path.dirname(
+                os.path.dirname(__file__),
+                ), "static"
+            )
+)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 redis_subscribe_threads = []
 
-REDIS_HOST_IP = "<your_ip_address>"
+REDIS_HOST_IP = "localhost"
 
 redis_connection = redis.Redis(REDIS_HOST_IP)
 
@@ -28,10 +28,8 @@ def subscribe_to_metric(connectionName, metric):
     client.subscribe(metric)
     for item in client.listen():
         if item['type'] == 'message':
-            #print item['channel']
-            #print item['data']
             if getattr(socketio, "socket_name", None) == connectionName:
-                socketio.emit(metric, item['data'],
+                socketio.emit(metric, json.loads(item['data']),
                            namespace='/start_graphing')
 
 
@@ -70,4 +68,4 @@ def set_socket_name(message):
     
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, port=5011)
